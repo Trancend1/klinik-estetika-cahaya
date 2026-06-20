@@ -23,17 +23,22 @@ interface TreatmentSectionProps {
 export function TreatmentSection({ patientId }: TreatmentSectionProps) {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const fetchTreatments = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
       const res = await fetch(`/api/patients/${patientId}/treatments`);
       if (res.ok) {
         const json = await res.json();
         setTreatments(json.data);
+      } else {
+        setError("Gagal memuat riwayat treatment");
       }
     } catch (e) {
       console.error("Gagal memuat riwayat treatment:", e);
+      setError("Gagal memuat riwayat treatment");
     } finally {
       setLoading(false);
     }
@@ -55,6 +60,10 @@ export function TreatmentSection({ patientId }: TreatmentSectionProps) {
       {loading ? (
         <div className="p-8 text-center">
           <p className="text-gray-400 text-sm">Memuat riwayat treatment...</p>
+        </div>
+      ) : error ? (
+        <div className="p-8 text-center">
+          <p className="text-red-500 text-sm">{error}</p>
         </div>
       ) : treatments.length === 0 ? (
         <div className="p-8 text-center">

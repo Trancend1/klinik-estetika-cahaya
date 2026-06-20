@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { sql } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import type { UserRole } from "@/types/database";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -32,7 +33,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.nama,
-          role: user.role,
+          role: user.role as UserRole,
         };
       },
     }),
@@ -41,15 +42,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.role = user.role as UserRole;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as { id: string; role: string }).id = token.id as string;
-        (session.user as { id: string; role: string }).role = token.role as string;
+        (session.user as { id: string; role: UserRole }).id = token.id as string;
+        (session.user as { id: string; role: UserRole }).role = token.role as UserRole;
       }
       return session;
     },

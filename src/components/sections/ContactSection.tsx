@@ -1,8 +1,9 @@
 import { MapPin, Clock, CreditCard, MessageCircle, ExternalLink } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { getWhatsAppNumber } from "@/lib/constants";
 
-const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281111111111";
+const waNumber = getWhatsAppNumber();
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -150,7 +151,7 @@ export function ContactSection() {
 
           <div className="rounded-2xl overflow-hidden border border-gray-200/80 h-[400px] lg:h-full min-h-[400px] shadow-card">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31730.1882488865!2d106.984656!3d-6.283469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698d8b0b0b0b0b%3A0x0!2sGrand+Galaxy+City!5e0!3m2!1sid!2sid!4v1"
+              src="https://www.google.com/maps?q=Ruko+Grand+Galaxy+City+Blok+A1+No+12+Bekasi+Selatan&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0, minHeight: "400px" }}

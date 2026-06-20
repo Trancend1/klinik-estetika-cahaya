@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { isValidPhone } from "@/lib/validation";
 
 export async function GET(
   _request: NextRequest,
@@ -53,11 +54,43 @@ export async function PUT(
   const body = await request.json();
   const { nama, nomor_wa, tanggal_lahir, jenis_kulit, alergi, status_followup, catatan_umum, tanggal_pengingat } = body;
 
+  if (!nama) {
+    const fields: string[] = [];
+    const values: unknown[] = [];
+    let idx = 1;
+
+    if (status_followup !== undefined) {
+      fields.push(`status_followup = $${idx}::status_followup`);
+      values.push(status_followup);
+      idx++;
+    }
+    if (tanggal_pengingat !== undefined) {
+      fields.push(`tanggal_pengingat = $${idx}`);
+      values.push(tanggal_pengingat || null);
+      idx++;
+    }
+
+    if (fields.length === 0) {
+      return NextResponse.json({ error: "Tidak ada field yang diupdate" }, { status: 400 });
+    }
+
+    values.push(params.id);
+    const result = await sql.query(
+      `UPDATE patients SET ${fields.join(", ")} WHERE id = $${idx} RETURNING *`,
+      values
+    );
+
+    return NextResponse.json({ data: result[0] });
+  }
+
   if (!nama?.trim()) {
     return NextResponse.json({ error: "Nama pasien wajib diisi" }, { status: 400 });
   }
   if (!nomor_wa?.trim()) {
     return NextResponse.json({ error: "Nomor WhatsApp wajib diisi" }, { status: 400 });
+  }
+  if (!isValidPhone(nomor_wa)) {
+    return NextResponse.json({ error: "Format nomor WA tidak valid. Gunakan format 62xxxxxxxxxx" }, { status: 400 });
   }
 
   const result = await sql.query(

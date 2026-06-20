@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { Users, CalendarClock, Bell, Activity, MessageCircle } from "lucide-react";
+import { Users, CalendarClock, Bell, Activity, MessageCircle, UserCheck } from "lucide-react";
 import { ExportButton } from "@/components/crm/ExportButton";
 
 interface Stat {
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
     {
       label: "Pasien Aktif",
       value: pasienAktif[0]?.count ?? 0,
-      icon: Users,
+      icon: UserCheck,
       color: "text-green-500",
     },
     {

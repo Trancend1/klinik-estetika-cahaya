@@ -85,14 +85,9 @@ export function PatientTable() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
-            Daftar Pasien
-          </h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {pagination.total} pasien terdaftar
-          </p>
-        </div>
+        <p className="text-sm text-gray-500">
+          {pagination.total} pasien terdaftar
+        </p>
         <a
           href="/pasien/baru"
           className="inline-flex items-center gap-2 px-4 py-2 bg-sage-500 text-white rounded-md text-sm font-medium hover:bg-sage-700 transition-colors shrink-0"

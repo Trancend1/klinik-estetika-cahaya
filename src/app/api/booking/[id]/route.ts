@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { isValidDate } from "@/lib/validation";
 
 export async function PUT(
   request: NextRequest,
@@ -21,11 +22,16 @@ export async function PUT(
   }
 
   const body = await request.json();
-  const { status, tanggal_preferensi } = body;
+  const { status, tanggal_preferensi, tanggal } = body;
+  const tgl = tanggal_preferensi || tanggal;
 
   const validStatuses = ["baru", "dikonfirmasi", "dijadwalkan_ulang", "selesai", "batal"];
   if (status && !validStatuses.includes(status)) {
     return NextResponse.json({ error: "Status tidak valid" }, { status: 400 });
+  }
+
+  if (tgl && !isValidDate(tgl)) {
+    return NextResponse.json({ error: "Format tanggal tidak valid" }, { status: 400 });
   }
 
   const updates: string[] = [];
@@ -35,9 +41,9 @@ export async function PUT(
     updates.push(`status = $${values.length + 1}::status_booking`);
     values.push(status);
   }
-  if (tanggal_preferensi) {
+  if (tgl) {
     updates.push(`tanggal_preferensi = $${values.length + 1}`);
-    values.push(tanggal_preferensi);
+    values.push(tgl);
   }
 
   if (updates.length === 0) {

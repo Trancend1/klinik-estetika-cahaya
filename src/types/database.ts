@@ -49,6 +49,14 @@ export interface Treatment {
   created_at: string;
 }
 
+export interface ContactMessage {
+  id: string;
+  nama: string;
+  email: string;
+  pesan: string;
+  created_at: string;
+}
+
 export interface BookingRequest {
   id: string;
   nama: string;

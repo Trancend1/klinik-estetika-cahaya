@@ -12,6 +12,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import type { StatusBooking, BookingRequest } from "@/types/database";
+import { ConfirmModal, RescheduleModal } from "@/components/crm/ConfirmModal";
 
 const statusLabels: Record<StatusBooking, string> = {
   baru: "Baru",
@@ -44,11 +45,17 @@ interface BookingWithPatient extends BookingRequest {
 
 export function BookingQueue() {
   const [bookings, setBookings] = useState<BookingWithPatient[]>([]);
+  const [total, setTotal] = useState(0);
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<string | null>(null);
+  const [rescheduleTarget, setRescheduleTarget] = useState<{
+    id: string;
+    date: string;
+  } | null>(null);
 
   const perPage = 10;
 
@@ -58,16 +65,19 @@ export function BookingQueue() {
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
+      params.set("page", String(page));
+      params.set("limit", String(perPage));
       const res = await fetch(`/api/booking?${params}`);
       if (!res.ok) throw new Error("Gagal memuat data");
       const json = await res.json();
       setBookings(json.data);
+      setTotal(json.total);
     } catch {
       setError("Gagal memuat antrian booking");
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, page]);
 
   useEffect(() => {
     fetchBookings();
@@ -81,16 +91,23 @@ export function BookingQueue() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      if (res.ok) fetchBookings();
+      if (res.ok) {
+        fetchBookings();
+      } else {
+        setError("Gagal memperbarui status booking");
+      }
     } catch (e) {
       console.error("Gagal update status booking:", e);
+      setError("Gagal memperbarui status booking");
     } finally {
       setActionLoading(null);
     }
   };
 
-  const convertToPatient = async (id: string) => {
-    if (!confirm("Konversi booking ini menjadi pasien baru?")) return;
+  const handleConvertConfirm = async () => {
+    const id = confirmTarget;
+    if (!id) return;
+    setConfirmTarget(null);
     setActionLoading(id);
     try {
       const res = await fetch(`/api/booking/${id}`, {
@@ -104,12 +121,10 @@ export function BookingQueue() {
     }
   };
 
-  const handleReschedule = async (id: string, currentDate: string) => {
-    const newDate = prompt(
-      "Masukkan tanggal baru (YYYY-MM-DD):",
-      currentDate
-    );
-    if (!newDate) return;
+  const handleRescheduleConfirm = async (newDate: string) => {
+    if (!rescheduleTarget) return;
+    const { id } = rescheduleTarget;
+    setRescheduleTarget(null);
     setActionLoading(id);
     try {
       const res = await fetch(`/api/booking/${id}`, {
@@ -128,8 +143,8 @@ export function BookingQueue() {
     }
   };
 
-  const totalPages = Math.ceil(bookings.length / perPage);
-  const paginated = bookings.slice((page - 1) * perPage, page * perPage);
+  const totalPages = Math.ceil(total / perPage);
+  const paginated = bookings;
   const newCount = bookings.filter((b) => b.status === "baru").length;
 
   return (
@@ -280,10 +295,10 @@ export function BookingQueue() {
                             <>
                               <button
                                 onClick={() =>
-                                  handleReschedule(
-                                    booking.id,
-                                    booking.tanggal_preferensi
-                                  )
+                                  setRescheduleTarget({
+                                    id: booking.id,
+                                    date: booking.tanggal_preferensi,
+                                  })
                                 }
                                 disabled={actionLoading === booking.id}
                                 className="p-1.5 rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors disabled:opacity-50"
@@ -292,17 +307,15 @@ export function BookingQueue() {
                               >
                                 <RefreshCw className="w-4 h-4" />
                               </button>
-                              {booking.status !== "dijadwalkan_ulang" && (
-                                <button
-                                  onClick={() => convertToPatient(booking.id)}
-                                  disabled={actionLoading === booking.id}
-                                  className="p-1.5 rounded-md bg-sage-50 text-sage-700 hover:bg-sage-100 transition-colors disabled:opacity-50"
-                                  title="Konversi ke Pasien"
-                                  aria-label="Konversi booking ke pasien"
-                                >
-                                  <UserPlus className="w-4 h-4" />
-                                </button>
-                              )}
+                              <button
+                                onClick={() => setConfirmTarget(booking.id)}
+                                disabled={actionLoading === booking.id}
+                                className="p-1.5 rounded-md bg-sage-50 text-sage-700 hover:bg-sage-100 transition-colors disabled:opacity-50"
+                                title="Konversi ke Pasien"
+                                aria-label="Konversi booking ke pasien"
+                              >
+                                <UserPlus className="w-4 h-4" />
+                              </button>
                             </>
                           )}
                           <a
@@ -351,6 +364,22 @@ export function BookingQueue() {
           )}
         </>
       )}
+
+      <ConfirmModal
+        open={confirmTarget !== null}
+        title="Konversi ke Pasien"
+        message="Booking ini akan dikonversi menjadi pasien baru. Lanjutkan?"
+        confirmLabel="Konversi"
+        onConfirm={handleConvertConfirm}
+        onCancel={() => setConfirmTarget(null)}
+      />
+
+      <RescheduleModal
+        open={rescheduleTarget !== null}
+        currentDate={rescheduleTarget?.date || ""}
+        onConfirm={handleRescheduleConfirm}
+        onCancel={() => setRescheduleTarget(null)}
+      />
     </div>
   );
 }

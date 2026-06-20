@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteUrl}/images/og/og-image.jpg`,
+        url: `${siteUrl}/images/og/og-image.svg`,
         width: 1200,
         height: 630,
         alt: "Klinik Estetika Cahaya",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Klinik Estetika Cahaya",
     description:
       "Klinik kecantikan berbasis medis di Bekasi Selatan. Ditangani langsung dokter spesialis kulit.",
-    images: [`${siteUrl}/images/og/og-image.jpg`],
+    images: [`${siteUrl}/images/og/og-image.svg`],
   },
   robots: {
     index: true,

@@ -28,8 +28,8 @@ export function MobileNav() {
               href={item.href}
               className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-md text-xs transition-colors ${
                 isActive
-                  ? "text-sage-700 font-medium"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-sage-700 font-medium bg-sage-50"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
               }`}
               aria-current={isActive ? "page" : undefined}
             >

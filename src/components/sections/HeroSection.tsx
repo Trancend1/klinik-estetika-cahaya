@@ -1,7 +1,8 @@
 import { MessageCircle, Calendar, ArrowRight } from "lucide-react";
 import { Container } from "@/components/layout/Container";
+import { getWhatsAppNumber } from "@/lib/constants";
 
-const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281111111111";
+const waNumber = getWhatsAppNumber();
 
 export function HeroSection() {
   return (
@@ -45,6 +46,7 @@ export function HeroSection() {
                 href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Halo Klinik Estetika Cahaya, saya ingin bertanya tentang perawatan kulit.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Hubungi via WhatsApp (buka tab baru)"
                 className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-sage-700 font-medium rounded-full border-2 border-sage-200 hover:border-sage-400 hover:bg-sage-50 focus:outline-none focus:ring-2 focus:ring-sage-300 focus:ring-offset-2 transition-all duration-200"
               >
                 <MessageCircle className="w-5 h-5" aria-hidden="true" />

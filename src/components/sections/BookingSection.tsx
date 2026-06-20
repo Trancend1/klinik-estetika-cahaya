@@ -4,8 +4,9 @@ import { useState, type FormEvent, type ChangeEvent } from "react";
 import { MessageCircle, Send } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { getWhatsAppNumber } from "@/lib/constants";
 
-const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281111111111";
+const waNumber = getWhatsAppNumber();
 
 interface FormData {
   nama: string;
@@ -51,7 +52,8 @@ export function BookingSection() {
         const data = await res.json();
         setError(data.error || "Gagal mengirim booking. Silakan coba lagi.");
       }
-    } catch {
+    } catch (e) {
+      console.error("Gagal mengirim booking:", e);
       setError("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
       setSubmitting(false);
@@ -101,6 +103,12 @@ export function BookingSection() {
                 Tim kami akan menghubungi Anda melalui WhatsApp untuk konfirmasi
                 jadwal dalam 1x24 jam.
               </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                className="mt-6 px-6 py-2 bg-sage-100 text-sage-700 font-medium rounded-full hover:bg-sage-200 transition-colors text-sm"
+              >
+                Kirim Booking Lagi
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-6 bg-white border border-sage-200/80 rounded-2xl p-8 md:p-10 shadow-card">

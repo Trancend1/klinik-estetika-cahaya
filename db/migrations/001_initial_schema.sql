@@ -80,5 +80,12 @@ create table booking_requests (
 -- ============================================================
 create index idx_patients_status on patients(status_followup);
 create index idx_patients_pengingat on patients(tanggal_pengingat) where tanggal_pengingat is not null;
+create index idx_patients_nama on patients using gin(nama gin_trgm_ops);
+create index idx_patients_nomor_wa on patients using gin(nomor_wa gin_trgm_ops);
 create index idx_treatments_patient on treatments(patient_id);
+create index idx_treatments_tanggal on treatments(tanggal);
 create index idx_bookings_status on booking_requests(status);
+create index idx_bookings_created on booking_requests(created_at);
+
+-- Trigram extension for ILIKE search (used in patient search)
+create extension if not exists pg_trgm;

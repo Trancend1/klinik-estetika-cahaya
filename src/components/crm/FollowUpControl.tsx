@@ -37,9 +37,11 @@ export function FollowUpControl({
   );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   const save = async () => {
     setSaving(true);
+    setError("");
     try {
       const res = await fetch(`/api/patients/${patientId}`, {
         method: "PUT",
@@ -54,10 +56,13 @@ export function FollowUpControl({
         setTimeout(() => setSaved(false), 2000);
         onUpdate();
       } else {
+        const data = await res.json();
+        setError(data.error || "Gagal menyimpan");
         setSaved(false);
       }
     } catch (e) {
       console.error("Gagal menyimpan status follow-up:", e);
+      setError("Gagal menyimpan. Coba lagi.");
     } finally {
       setSaving(false);
     }
@@ -107,6 +112,10 @@ export function FollowUpControl({
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500"
           />
         </div>
+
+        {error && (
+          <p className="text-xs text-red-600 text-center">{error}</p>
+        )}
 
         <button
           onClick={save}

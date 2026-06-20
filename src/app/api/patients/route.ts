@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { isValidPhone } from "@/lib/validation";
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -15,6 +16,11 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "20")));
   const offset = (page - 1) * limit;
+
+  const validStatuses = ["kunjungan_pertama", "kontrol_dijadwalkan", "perlu_diingatkan", "aktif", "tidak_aktif"];
+  if (status && !validStatuses.includes(status)) {
+    return NextResponse.json({ error: "Status filter tidak valid" }, { status: 400 });
+  }
 
   const conditions: string[] = [];
   const params: (string | number)[] = [];
@@ -71,6 +77,9 @@ export async function POST(request: NextRequest) {
   }
   if (!nomor_wa?.trim()) {
     return NextResponse.json({ error: "Nomor WhatsApp wajib diisi" }, { status: 400 });
+  }
+  if (!isValidPhone(nomor_wa)) {
+    return NextResponse.json({ error: "Format nomor WA tidak valid. Gunakan format 62xxxxxxxxxx" }, { status: 400 });
   }
 
   const result = await sql.query(

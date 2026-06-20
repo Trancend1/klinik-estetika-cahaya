@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { sql } from "@/lib/db";
 import { PatientForm } from "@/components/crm/PatientForm";
 import type { JenisKulit } from "@/types/database";
@@ -18,16 +18,7 @@ export default async function PasienEditPage({
     [params.id]
   );
 
-  if (!result[0]) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-gray-500">Pasien tidak ditemukan</p>
-        <a href="/pasien" className="text-sage-700 hover:underline text-sm mt-2 inline-block">
-          Kembali ke daftar pasien
-        </a>
-      </div>
-    );
-  }
+  if (!result[0]) notFound();
 
   const patient = result[0] as {
     id: string;

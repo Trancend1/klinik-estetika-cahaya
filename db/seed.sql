@@ -4,6 +4,7 @@
 -- Jalankan SETELAH migration 001_initial_schema.sql
 
 -- Admin user (password: admin123)
+-- WARNING: Ganti password dokter dengan hash berbeda di production!
 insert into users (email, password_hash, nama, role) values
   ('admin@klinikcahaya.id', '$2b$10$AdwAnxWtSdhxBfa42PUFNuZi5CAb1EEY0DhH/lq.rYn2aBstOcbr6', 'Admin Klinik', 'admin'),
   ('dr.nadia@klinikcahaya.id', '$2b$10$AdwAnxWtSdhxBfa42PUFNuZi5CAb1EEY0DhH/lq.rYn2aBstOcbr6', 'dr. Nadia Kirana', 'dokter');

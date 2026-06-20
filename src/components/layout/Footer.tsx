@@ -1,4 +1,7 @@
 import { MessageCircle, MapPin } from "lucide-react";
+import { getWhatsAppNumber } from "@/lib/constants";
+
+const waNumber = getWhatsAppNumber();
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -18,8 +21,6 @@ function InstagramIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-
-const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281111111111";
 
 export function Footer() {
   const year = new Date().getFullYear();

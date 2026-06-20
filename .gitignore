@@ -31,6 +31,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# migration scripts
+/scripts/migrate.mjs
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

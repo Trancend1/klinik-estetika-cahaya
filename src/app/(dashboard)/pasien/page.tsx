@@ -1,8 +1,18 @@
+import { PatientTable } from "@/components/crm/PatientTable";
+import { ExportButton } from "@/components/crm/ExportButton";
+
 export default function PasienPage() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Daftar Pasien</h1>
-      <p className="text-gray-500 text-sm mt-2">Tabel pasien akan dibangun di Phase 4.</p>
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div />
+        <ExportButton
+          label="Export CSV Pasien"
+          filename="pasien.csv"
+          fetchUrl="/api/patients/export"
+        />
+      </div>
+      <PatientTable />
     </div>
   );
 }

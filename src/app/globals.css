@@ -7,13 +7,76 @@
   --foreground: #1F1C19;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
 }
 
+@layer base {
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-sage-500;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .text-crm-body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .text-crm-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+  }
+  .text-crm-meta {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .text-crm-section {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animate-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animate-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up,
+    .animate-fade-in,
+    .animate-scale-in {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
   }
 }

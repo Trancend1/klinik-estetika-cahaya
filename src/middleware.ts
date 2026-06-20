@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/pasien", "/booking"];
 
@@ -11,24 +11,23 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isProtected) {
-    const response = await updateSession(request);
-    const hasSession = request.cookies.get("sb-access-token") ||
-      request.cookies.getAll().some((c) => c.name.includes("auth-token"));
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
 
-    if (!hasSession) {
+    if (!token) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
-
-    return response;
   }
 
-  return await updateSession(request);
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/auth|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

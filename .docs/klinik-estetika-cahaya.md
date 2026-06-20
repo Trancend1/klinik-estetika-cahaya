@@ -10,7 +10,7 @@
 |---|---|
 | **Nama Project** | klinik-estetika-cahaya |
 | **Tipe** | One Page Company Profile + CRM Sederhana |
-| **Stack** | Next.js 14 (App Router) + TypeScript + Tailwind CSS + Supabase |
+| **Stack** | Next.js 14 (App Router) + TypeScript + Tailwind CSS + Neonbase |
 | **Estimasi Effort** | 9–12 hari kerja efektif |
 | **Budget Klien** | Rp 3.000.000 |
 | **Status** | Sprint 1 — Active |
@@ -86,8 +86,8 @@ klinik-estetika-cahaya.md      ← KAMU DI SINI (pintu masuk)
 | Target device CRM | Desktop-first (admin pakai dari komputer klinik) |
 | CTA utama | Form booking konsultasi + tombol WhatsApp |
 | Auth CRM | Email + password (admin & dokter saja) |
-| Database | Supabase (PostgreSQL) |
-| Hosting | Vercel + Supabase |
+| Database | Neonbase (PostgreSQL) |
+| Hosting | Vercel + Neonbase |
 | Analytics | Google Analytics 4 |
 
 ---
@@ -128,7 +128,7 @@ Project dinyatakan selesai ketika **semua** kriteria berikut terpenuhi:
 - **Tone visual** klien: tenang, bersih, hangat — klinik medis yang nyaman, bukan dingin seperti rumah sakit.
 - **Kredibilitas medis** dibangun lewat: foto dr. Nadia asli, badge STR/sertifikasi, before-after nyata, bahasa yang medis tapi tidak menakutkan.
 - **Privasi before-after:** wajah pasien tidak ditampilkan penuh tanpa izin tertulis. Bisa crop area treatment saja.
-- **Data pasien** disimpan di Supabase dengan Row Level Security aktif. Tidak ada data pasien yang bisa diakses tanpa autentikasi.
+- **Data pasien** disimpan di Neonbase dengan Row Level Security aktif. Tidak ada data pasien yang bisa diakses tanpa autentikasi.
 - **Logo klinik** sudah final (dikirim klien). Brand color sudah ada panduan dari klien.
 
 ---

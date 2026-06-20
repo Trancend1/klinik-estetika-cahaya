@@ -1,6 +1,16 @@
 -- ============================================================
--- Klinik Estetika Cahaya — Initial Schema
+-- Klinik Estetika Cahaya — Initial Schema (Neon)
 -- ============================================================
+
+-- Users table (replaces Supabase auth.users)
+create table users (
+  id              uuid primary key default gen_random_uuid(),
+  email           text not null unique,
+  password_hash   text not null,
+  nama            text not null,
+  role            text not null default 'admin' check (role in ('admin', 'dokter')),
+  created_at      timestamptz not null default now()
+);
 
 -- Enums
 create type jenis_kulit as enum ('normal', 'berminyak', 'kombinasi', 'sensitif', 'kering');
@@ -47,7 +57,7 @@ create table treatments (
   jenis_treatment     text not null,
   catatan_dokter      text,
   produk_diresepkan   text,
-  created_by          uuid not null references auth.users(id),
+  created_by          uuid not null references users(id),
   created_at          timestamptz not null default now()
 );
 
@@ -64,61 +74,6 @@ create table booking_requests (
   linked_patient_id   uuid references patients(id) on delete set null,
   created_at          timestamptz not null default now()
 );
-
--- ============================================================
--- Row Level Security
--- ============================================================
-
-alter table patients enable row level security;
-alter table treatments enable row level security;
-alter table booking_requests enable row level security;
-
--- Hanya authenticated users bisa akses semua tabel
-create policy "Authenticated can read patients"
-  on patients for select
-  to authenticated
-  using (true);
-
-create policy "Authenticated can insert patients"
-  on patients for insert
-  to authenticated
-  with check (true);
-
-create policy "Authenticated can update patients"
-  on patients for update
-  to authenticated
-  using (true);
-
-create policy "Authenticated can read treatments"
-  on treatments for select
-  to authenticated
-  using (true);
-
-create policy "Authenticated can insert treatments"
-  on treatments for insert
-  to authenticated
-  with check (auth.uid() = created_by);
-
-create policy "Authenticated can update treatments"
-  on treatments for update
-  to authenticated
-  using (true);
-
-create policy "Authenticated can read bookings"
-  on booking_requests for select
-  to authenticated
-  using (true);
-
-create policy "Authenticated can update bookings"
-  on booking_requests for update
-  to authenticated
-  using (true);
-
--- Booking dari website publik bisa insert (anon) — form booking
-create policy "Anon can insert booking"
-  on booking_requests for insert
-  to anon
-  with check (true);
 
 -- ============================================================
 -- Indexes

@@ -1,9 +1,12 @@
 -- ============================================================
--- Seed Data — Klinik Estetika Cahaya (untuk testing)
+-- Seed Data — Klinik Estetika Cahaya (testing)
 -- ============================================================
 -- Jalankan SETELAH migration 001_initial_schema.sql
--- Requires: ada minimal 1 user di auth.users (buat manual di Supabase dashboard)
--- Ganti '<ADMIN_USER_ID>' dengan UUID user yang sudah dibuat
+
+-- Admin user (password: admin123)
+insert into users (email, password_hash, nama, role) values
+  ('admin@klinikcahaya.id', '$2b$10$AdwAnxWtSdhxBfa42PUFNuZi5CAb1EEY0DhH/lq.rYn2aBstOcbr6', 'Admin Klinik', 'admin'),
+  ('dr.nadia@klinikcahaya.id', '$2b$10$AdwAnxWtSdhxBfa42PUFNuZi5CAb1EEY0DhH/lq.rYn2aBstOcbr6', 'dr. Nadia Kirana', 'dokter');
 
 -- Patients dummy
 insert into patients (nama, nomor_wa, tanggal_lahir, jenis_kulit, alergi, status_followup, catatan_umum) values
@@ -23,15 +26,14 @@ insert into booking_requests (nama, nomor_wa, tanggal_preferensi, keluhan, statu
   ('Yuni Astuti', '628222222002', current_date + 2, 'Konsultasi kulit sensitif', 'baru'),
   ('Citra Permata', '628222222003', current_date - 1, 'Peeling wajah', 'dikonfirmasi');
 
--- NOTE: Treatment seed butuh auth.users ID yang valid.
--- Uncomment dan ganti <ADMIN_USER_ID> setelah buat user di Supabase:
---
--- insert into treatments (patient_id, tanggal, jenis_treatment, catatan_dokter, produk_diresepkan, created_by)
--- select
---   p.id,
---   current_date - 30,
---   'Facial Medis',
---   'Kulit membaik setelah seri pertama. Lanjutkan dengan chemical peeling ringan bulan depan.',
---   'Retinol 0.025%, SPF 50+ pagi hari',
---   '<ADMIN_USER_ID>'::uuid
--- from patients p where p.nama = 'Dewi Rahayu';
+-- Treatment seed (menggunakan user dokter yang sudah ada)
+insert into treatments (patient_id, tanggal, jenis_treatment, catatan_dokter, produk_diresepkan, created_by)
+select
+  p.id,
+  current_date - 30,
+  'Facial Medis',
+  'Kulit membaik setelah seri pertama. Lanjutkan dengan chemical peeling ringan bulan depan.',
+  'Retinol 0.025%, SPF 50+ pagi hari',
+  u.id
+from patients p, users u
+where p.nama = 'Dewi Rahayu' and u.email = 'dr.nadia@klinikcahaya.id';

@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  // Handler contact form — akan diimplementasi di Phase 5
-  const body = await request.json();
-  return NextResponse.json(
-    { message: "Contact endpoint — coming in Phase 5", received: body },
-    { status: 200 }
-  );
+  try {
+    const body = await request.json();
+    const { nama, email, pesan } = body;
+
+    if (!nama?.trim()) {
+      return NextResponse.json({ error: "Nama wajib diisi" }, { status: 400 });
+    }
+    if (!email?.trim()) {
+      return NextResponse.json({ error: "Email wajib diisi" }, { status: 400 });
+    }
+    if (!pesan?.trim()) {
+      return NextResponse.json({ error: "Pesan wajib diisi" }, { status: 400 });
+    }
+
+    return NextResponse.json({
+      message: "Terima kasih, pesan Anda telah diterima. Kami akan menghubungi Anda segera.",
+    });
+  } catch {
+    return NextResponse.json({ error: "Gagal memproses pesan" }, { status: 400 });
+  }
 }

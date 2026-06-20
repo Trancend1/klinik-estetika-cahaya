@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Klinik Estetika Cahaya
 
-## Getting Started
+Website company profile + CRM internal untuk klinik kecantikan berbasis medis di Bekasi Selatan.
 
-First, run the development server:
+## Tech Stack
+
+**Framework:** Next.js 14 (App Router) + TypeScript  
+**Styling:** Tailwind CSS 3.4  
+**Database:** Neon (PostgreSQL serverless)  
+**Auth:** NextAuth.js v4 (Credentials + JWT)  
+**Analytics:** GA4 + Vercel Analytics  
+**Icons:** Lucide React  
+**Fonts:** Inter (body) + Fraunces (headings publik)
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env.local
+# Edit .env.local — isi DATABASE_URL, NEXTAUTH_SECRET, dll
+
+# Run migration (buat tabel + seed data)
+npm run db:migrate
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Website Publik (tanpa login)
 
-## Learn More
+| Route       | Konten                                                                                |
+| ----------- | ------------------------------------------------------------------------------------- |
+| `/`         | One-page landing (Hero → Keunggulan → About → Layanan → Testimoni → Booking → Kontak) |
+| `/#booking` | Form booking konsultasi                                                               |
 
-To learn more about Next.js, take a look at the following resources:
+### Admin CRM (perlu login)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Route               | Konten                                        |
+| ------------------- | --------------------------------------------- |
+| `/login`            | Login page                                    |
+| `/dashboard`        | Statistik ringkas                             |
+| `/pasien`           | Daftar pasien (cari, filter, export CSV)      |
+| `/pasien/baru`      | Tambah pasien baru                            |
+| `/pasien/[id]`      | Detail pasien + riwayat treatment + follow-up |
+| `/pasien/[id]/edit` | Edit data pasien                              |
+| `/booking`          | Antrian booking dari website                  |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Default Credentials (seed data)
 
-## Deploy on Vercel
+| Email                      | Password   | Role   |
+| -------------------------- | ---------- | ------ |
+| `admin@klinikcahaya.id`    | `admin123` | Admin  |
+| `dr.nadia@klinikcahaya.id` | `admin123` | Dokter |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable                      | Required | Keterangan                            |
+| ----------------------------- | -------- | ------------------------------------- |
+| `DATABASE_URL`                | ✅       | Neon PostgreSQL connection string     |
+| `NEXTAUTH_SECRET`             | ✅       | Generate: `openssl rand -base64 32`   |
+| `NEXTAUTH_URL`                | ✅       | `http://localhost:3000` (dev)         |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | ❌       | Nomor WA admin klinik (format: 628xx) |
+| `NEXT_PUBLIC_GA_ID`           | ❌       | Google Analytics ID                   |
+| `NEXT_PUBLIC_SITE_URL`        | ❌       | Untuk OG image & metadata             |
+
+## Database
+
+Migration + seed:
+
+```bash
+npm run db:migrate
+```
+
+SQL files di `db/migrations/` dan `db/seed.sql`.
+
+## Scripts
+
+| Script     | Perintah             |
+| ---------- | -------------------- |
+| Dev server | `npm run dev`        |
+| Build      | `npm run build`      |
+| Lint       | `npm run lint`       |
+| Migrate DB | `npm run db:migrate` |

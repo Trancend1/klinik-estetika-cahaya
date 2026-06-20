@@ -14,6 +14,16 @@ export type StatusBooking =
   | "selesai"
   | "batal";
 
+export type UserRole = "admin" | "dokter";
+
+export interface User {
+  id: string;
+  email: string;
+  nama: string;
+  role: UserRole;
+  created_at: string;
+}
+
 export interface Patient {
   id: string;
   nama: string;
@@ -49,42 +59,3 @@ export interface BookingRequest {
   linked_patient_id: string | null;
   created_at: string;
 }
-
-export type Database = {
-  public: {
-    Tables: {
-      patients: {
-        Row: Patient;
-        Insert: Omit<Patient, "id" | "created_at" | "updated_at"> & {
-          id?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: Partial<Omit<Patient, "id" | "created_at">>;
-      };
-      treatments: {
-        Row: Treatment;
-        Insert: Omit<Treatment, "id" | "created_at"> & {
-          id?: string;
-          created_at?: string;
-        };
-        Update: Partial<Omit<Treatment, "id" | "created_at" | "patient_id" | "created_by">>;
-      };
-      booking_requests: {
-        Row: BookingRequest;
-        Insert: Omit<BookingRequest, "id" | "created_at"> & {
-          id?: string;
-          created_at?: string;
-        };
-        Update: Partial<Omit<BookingRequest, "id" | "created_at">>;
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: {
-      jenis_kulit: JenisKulit;
-      status_followup: StatusFollowup;
-      status_booking: StatusBooking;
-    };
-  };
-};
